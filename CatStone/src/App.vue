@@ -1,6 +1,11 @@
 <template>
-  <h1>💖 Hello World!</h1>
-  <p>Welcome to your Electron application.</p>
+  <v-layout>
+    <v-app-bar title="CatStone" />
+    <v-main>
+      <h1>💖 Hello World!</h1>
+      <p>Welcome to your Electron application.</p>
+    </v-main>
+  </v-layout>
 </template>
 
 <script setup>
