@@ -26,7 +26,7 @@
     <v-main>
       <h1>💖 Hello World!</h1>
       <p>Welcome to your Electron application.</p>
-      <component :is="route" />
+      <component :is="route.sfc" />
     </v-main>
   </v-layout>
 </template>
@@ -42,7 +42,7 @@
  }
 
  //Computes it after changes so we dont have to.
- const route = computed(()=>{return routes[routeName.value].sfc})
+ const route = computed(()=>{return routes[routeName.value]})
 
  console.log('👋 This message is being logged by "App.vue", included via Vite');
 
