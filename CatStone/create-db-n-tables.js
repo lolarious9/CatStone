@@ -4,8 +4,8 @@ async function createDatabase() {
     // db connection 
     const connectionConfig = {
         host: 'localhost',
-        user: 'username',
-        password: 'password'
+        user: 'root',
+        password: 'ma19MA93'
     };
 
     const connection = await mysql.createConnection(connectionConfig);
@@ -23,7 +23,7 @@ async function createDatabase() {
     } catch (error) {
         console.error('Error creating database:', error);
     } finally {
-        connection.end();
+        connection.end('Connection End');
     }
 }
 
@@ -31,7 +31,7 @@ async function createTables() {
     const connectionConfig = {
         host: 'localhost',
         user: 'root',
-        password: '',
+        password: 'ma19MA93',
         database: 'catstonedb' 
     };
 
@@ -75,7 +75,7 @@ async function createTables() {
 
         // Create accounts table
         await connection.execute(`
-            CREATE TABLE IF NOT EXISTS table2 (
+            CREATE TABLE IF NOT EXISTS accounts (
                 borrower_id INT PRIMARY KEY,
                 balance DECIMAL(10, 2),
                 FOREIGN KEY (borrower_id) REFERENCES borrowers(borrower_id)
@@ -87,13 +87,35 @@ async function createTables() {
     } catch (error) {
         console.error('Error creating tables:', error);
     } finally {
-        connection.end(); 
+        connection.end('Connection End'); 
     }
 }
 
 async function setupDatabase() {
     await createDatabase();
     await createTables();
+    
+    // Grant privileges to the 'root' user
+    const connectionConfig = {
+        host: 'localhost',
+        user: 'root',
+        password: 'ma19MA93',
+        database: 'catstonedb' 
+    };
+
+    // Create connection
+    const connection = await mysql.createConnection(connectionConfig);
+
+    try {
+        // Grant privileges to the 'root' user
+        await connection.execute('GRANT ALL PRIVILEGES ON *.* TO "root"@localhost');
+        await connection.execute('FLUSH PRIVILEGES');
+        console.log('Privileges granted to the root user');
+    } catch (error) {
+        console.error('Error granting privileges:', error);
+    } finally {
+        connection.end('Connection End');
+    }
 }
 
 setupDatabase().catch(error => {
