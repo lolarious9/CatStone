@@ -5,7 +5,7 @@ async function createDatabase() {
     const connectionConfig = {
         host: 'localhost',
         user: 'root',
-        password: 'ma19MA93'
+        password: ''
     };
 
     const connection = await mysql.createConnection(connectionConfig);
@@ -31,7 +31,7 @@ async function createTables() {
     const connectionConfig = {
         host: 'localhost',
         user: 'root',
-        password: 'ma19MA93',
+        password: '',
         database: 'catstonedb' 
     };
 
@@ -99,7 +99,7 @@ async function setupDatabase() {
     const connectionConfig = {
         host: 'localhost',
         user: 'root',
-        password: 'ma19MA93',
+        password: '',
         database: 'catstonedb' 
     };
 
