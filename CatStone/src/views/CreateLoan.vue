@@ -49,6 +49,19 @@
         </v-col>
       </v-row>
 
+      <v-row class="d-flex justify-center">
+        <v-col cols="12" md="12">
+          <v-text-field
+            v-model="dob"
+            :rules="dobRules"
+            label="Date of Birth"
+            hide-details
+            required
+            @input="restrictDOBInput"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+
       <v-row>
         <v-col cols="12" md="12" class="text-center">
           <v-btn color="primary" @click="submitForm">Submit</v-btn>
@@ -121,6 +134,17 @@ export default{
           return true;
         },
       ],
+
+      dob: '',
+      dobRules: [
+        value => {
+          const dateFormat = /^\d{2}\/\d{2}\/\d{4}$/;
+          if (value && value.match(dateFormat)) {
+            return true;
+          }
+          return 'Date of Birth must be in the format mm/dd/yyyy';
+        },
+      ],
     }),
 
     methods: {
@@ -151,6 +175,13 @@ export default{
 
       // Formatting phone number as (XXX) XXX-XXXX
       this.phone = formattedPhone.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+    },
+
+      // Formats the DOB, restricts user to not input more characters than needed
+      restrictDOBInput() {
+      let cleanedInput = this.dob.replace(/\D/g, '');
+      cleanedInput = cleanedInput.slice(0, 8);
+      this.dob = cleanedInput.replace(/(\d{2})(\d{2})(\d{4})/, '$1/$2/$3');
     },
   }
 }
