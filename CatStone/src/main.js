@@ -1,5 +1,5 @@
-const { app, BrowserWindow } = require('electron');
-const path = require('path');
+import { app, BrowserWindow, ipcMain }  from "electron";
+import path from "path"
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -15,6 +15,33 @@ const createWindow = () => {
       preload: path.join(__dirname, 'preload.js'),
     },
   });
+
+
+  //Loan Creater
+  ipcMain.handle("db:createLoan", (evt,title)=>{
+    //to-do make async
+    console.log(`${evt}\t${title}`)
+    
+  })
+  
+  //Get borrowers and their loans
+   ipcMain.handle("db:getBorrowers", (evt, constraints = null)=>{
+    if (!constraints){
+      //  Return DB CALL FOR ALL BORROWERS WITH LOANS
+    }
+
+    // Return DB CALL WITH CONSTRAINTS
+
+
+    console.log(`${evt}\t${constraints}`)
+  })
+
+  //Pay loan for given borrower
+   ipcMain.handle("db:payLoan",(evt,title)=>{
+    console.log(`${evt}\t${title}`)
+  })
+
+
 
   // and load the index.html of the app.
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
