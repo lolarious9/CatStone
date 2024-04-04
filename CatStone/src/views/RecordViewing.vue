@@ -1,26 +1,35 @@
 <template>
-    <v-select :items="users" item-title="name" label="Select an account">
-    </v-select>
-    <v-btn> View </v-btn>
+  <v-select
+    :items="users"
+    item-title="name"
+    label="Select an account"
+  />
+  <v-btn> View </v-btn>
   
-    <v-data-table :headers="header1" :items="users">
-      <template v-slot:item="{ item }">
-        <tr>
-          <td>{{ item.loans[0].loanID }}</td>
-          <td>{{ item.loans[0].loanAmount }}</td>
-          <td>{{ item.loans[0].loanDate }}</td>
-        </tr>
-      </template>
-    </v-data-table>
-    <v-data-table :headers="header2" :items="users">
-      <template v-slot:item="{ item }">
-        <tr>
-          <td>{{ item.payments[0].paymentID }}</td>
-          <td>{{ item.payments[0].paymentAmount }}</td>
-        </tr>
-      </template>
-    </v-data-table>
-  </template>
+  <v-data-table
+    :headers="header1"
+    :items="users"
+  >
+    <template #item="{ item }">
+      <tr>
+        <td>{{ item.loans[0].loanID }}</td>
+        <td>{{ item.loans[0].loanAmount }}</td>
+        <td>{{ item.loans[0].loanDate }}</td>
+      </tr>
+    </template>
+  </v-data-table>
+  <v-data-table
+    :headers="header2"
+    :items="users"
+  >
+    <template #item="{ item }">
+      <tr>
+        <td>{{ item.payments[0].paymentID }}</td>
+        <td>{{ item.payments[0].paymentAmount }}</td>
+      </tr>
+    </template>
+  </v-data-table>
+</template>
   
   <script setup>
     const header1 = [
