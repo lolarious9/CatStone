@@ -1,37 +1,43 @@
 <template>
   <v-select
+    v-model="test"
     :items="users"
     item-title="name"
     label="Select an account"
+    :return-object="true"
+    @update:model-value="onBorrowerSelect"
   />
   <v-btn> View </v-btn>
   
   <v-data-table
+   
+    :items="test.loans"
     :headers="header1"
-    :items="users"
   >
     <template #item="{ item }">
       <tr>
-        <td>{{ item.loans[0].loanID }}</td>
-        <td>{{ item.loans[0].loanAmount }}</td>
-        <td>{{ item.loans[0].loanDate }}</td>
+        <td>{{ item.loanID }}</td>
+        <td>{{ item.loanAmount }}</td>
+        <td>{{ item.loanDate }}</td>
       </tr>
     </template>
   </v-data-table>
   <v-data-table
+  
+    :items="test.payments"
     :headers="header2"
-    :items="users"
   >
     <template #item="{ item }">
       <tr>
-        <td>{{ item.payments[0].paymentID }}</td>
-        <td>{{ item.payments[0].paymentAmount }}</td>
+        <td>{{ item.paymentID }}</td>
+        <td>{{ item.paymentAmount }}</td>
       </tr>
     </template>
   </v-data-table>
 </template>
   
   <script setup>
+  import { ref } from 'vue';
     const header1 = [
       { title: 'Loan ID' },
       { title: 'Loan Amount' },
@@ -44,7 +50,7 @@
         loans: [
           {
             loanID: 1,
-            loanAmount: 300,
+            loanAmount: 123,
             loanDate: new Date('3/17/24'),
           },
         ],
@@ -64,7 +70,7 @@
         loans: [
           {
             loanID: 2,
-            loanAmount: 300,
+            loanAmount: 41233,
             loanDate: new Date('3/24/24'),
           },
         ],
@@ -84,7 +90,7 @@
         loans: [
           {
             loanID: 4,
-            loanAmount: 300,
+            loanAmount: 3200,
             loanDate: new Date('4/7/24'),
           },
         ],
@@ -98,6 +104,10 @@
             paymentAmount: 175,
           },
         ],
-      },
-    ]
+      },   
+    ] 
+    
+          let test = ref(users[0]); 
+          let onBorrowerSelect = (val)=>{test.value=val};
+
   </script>
