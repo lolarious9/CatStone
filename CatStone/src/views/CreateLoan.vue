@@ -1,8 +1,8 @@
 <template>
   <v-form v-model="valid">
     <v-container>
-      <v-row>
-        <v-col cols="12" md="4">
+      <v-row class="d-flex justify-center">
+        <v-col cols="12" md="6">
           <v-text-field
             v-model="firstname"
             :counter="10"
@@ -13,7 +13,7 @@
           ></v-text-field>
         </v-col>
 
-        <v-col cols="12" md="4">
+        <v-col cols="12" md="6">
           <v-text-field
             v-model="lastname"
             :counter="10"
@@ -23,8 +23,10 @@
             required
           ></v-text-field>
         </v-col>
+      </v-row>
 
-        <v-col cols="12" md="4">
+      <v-row class="d-flex justify-center">
+        <v-col cols="12" md="12">
           <v-text-field
             v-model="email"
             :rules="emailRules"
