@@ -26,7 +26,7 @@
       </v-row>
 
       <v-row class="d-flex justify-center">
-        <v-col cols="12" md="12">
+        <v-col cols="12" md="6">
           <v-text-field
             v-model="email"
             :rules="emailRules"
@@ -35,12 +35,27 @@
             required
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="12">
+
+        <v-col cols="12" md="6">
+          <v-text-field
+            v-model="phone"
+            :rules="phoneRules"
+            label="Phone"
+            hide-details
+            required
+            v-mask="'(###) ###-####'"
+            @input="formatPhoneNumber"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col cols="12" md="12" class="text-center">
           <v-btn color="primary" @click="submitForm">Submit</v-btn>
           <!-- Wrapping status pop up in div class so I can add some padding -->
           <div class="submission-status" v-show="submissionStatus !== null">
             <v-alert :type="submissionStatus ? 'success' : 'error'">
-              {{ submissionStatus ? 'Form submitted successfully! 🎉' : 'Form submission failed. Please ensure all fields are filled.' }}
+              {{ submissionStatus ? 'Form submitted successfully! 🎉' : 'Form submission failed. Please fill out all fields correctly.' }}
             </v-alert>
           </div>
         </v-col>
@@ -57,7 +72,11 @@
 </style>
 
 <script>
+import VueMaskPlugin from 'v-mask';
+
 export default{
+  plugins: [VueMaskPlugin],
+
   // Field Data - First Name, Last Name, Email, etc.
   data: () => ({
       valid: false,
@@ -77,6 +96,7 @@ export default{
           return 'Name must be less than 25 characters.'
         },
       ],
+
       email: '',
       emailRules: [
         value => {
@@ -90,10 +110,21 @@ export default{
           return 'E-mail must be valid.'
         },
       ],
+
+      phone: '',
+      phoneRules: [
+        value => {
+          if (!value) return 'Phone number is required.';
+          const formattedPhone = value.replace(/\D/g, '');
+          if (formattedPhone.length !== 10) return 'Phone number must be 10 digits long.';
+
+          return true;
+        },
+      ],
     }),
 
-    // Submit form function
     methods: {
+    // Submit form function
     submitForm() {
       if (this.valid) {
         // Setting a timer to disappear after x amount of time
@@ -105,7 +136,22 @@ export default{
       } else {
         this.submissionStatus = false;
       }
-    }
+    },
+
+    // Phone number function
+    formatPhoneNumber() {
+      // Remove all non-numeric characters from phone number
+      let formattedPhone = this.phone.replace(/\D/g, '');
+
+      // Check if the phone number length exceeds 10 characters
+      if (formattedPhone.length > 10) {
+        // If it exceeds 10 characters, trim it to 10 characters
+        formattedPhone = formattedPhone.slice(0, 10);
+      }
+
+      // Formatting phone number as (XXX) XXX-XXXX
+      this.phone = formattedPhone.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+    },
   }
 }
 </script>
