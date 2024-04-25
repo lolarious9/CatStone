@@ -1,23 +1,46 @@
 <template>
-  <v-card title="Loans">
-    <v-card-text>{{ numAccouts + " Debtors : $" + sumAccts }}</v-card-text>
+  <v-card
+    v-if="ready"
+  >
+    <v-card-title>Accounts: {{ numAccouts }}</v-card-title>
+    <v-card-text>
+      {{ tmp }}
+    </v-card-text>
   </v-card>
 </template>
 
 
 <script setup>
- import {  computed } from 'vue'
+ import {  ref,computed} from 'vue'
+  
+   function getBorrowers (){
+    const ready = ref(false)
+    const tmp = ref(null);
 
-  let tmpDataIn = [{
-    loanSum:100
-  },
-  {loanSum: 250},
-  {loanSum: 350}
-  ]
+    //execute the search
+    const exe = async()=>
+    {
+      ready.value=false;
+      tmp.value =  await window.dbDispatch.getBorrowers();   
+      ready.value = true;
+    }
 
+    exe();
+    return {
+      tmp,
+      ready
+    }
+  }
+  
+  
+  let {tmp,ready}= getBorrowers();
+
+
+
+ 
   // Computed will change with the underlying object (tmpDataIn for now)
-  let sumAccts = computed(()=>tmpDataIn.reduce((prev,curr)=> prev+ curr.loanSum,0))
-  let numAccouts = computed(()=>tmpDataIn.length)
+  //let sumAccts = computed(()=> tmp != null ? tmp.reduce((prev,curr)=> prev+ curr.loanSum,0):"woah");
+  let numAccouts = computed(()=>tmp.value.length != null ?  tmp.value.length : 0)
 
   
 
