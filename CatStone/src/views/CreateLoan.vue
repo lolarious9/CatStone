@@ -62,6 +62,18 @@
         </v-col>
       </v-row>
 
+      <v-row class="d-flex justify-center">
+        <v-col cols="12" md="12">
+          <v-text-field
+            v-model="streetAddress"
+            :rules="streetAddressRules"
+            label="Street Address"
+            hide-details
+            required
+          ></v-text-field>
+        </v-col>
+      </v-row>
+
       <v-row>
         <v-col cols="12" md="12" class="text-center">
           <v-btn color="primary" @click="submitForm">Submit</v-btn>
@@ -143,6 +155,17 @@ export default{
             return true;
           }
           return 'Date of Birth must be in the format mm/dd/yyyy';
+        },
+      ],
+
+      streetAddress: '',
+      streetAddressRules: [
+        value => {
+          if (!value) return 'Street address is required.';
+          
+          const regex = /^\d+\s[A-Za-z\s]+$/;
+          if (!regex.test(value)) return 'Please enter a valid street address (e.g., 123 Main St).';
+          return true;
         },
       ],
     }),
