@@ -20,7 +20,7 @@
           </v-list>
         </v-menu>
       </template>
-      <v-app-bar-title>CatStone</v-app-bar-title>
+      <v-app-bar-title>Loan Tracking System</v-app-bar-title>
     </v-app-bar>
 
     <v-main>
