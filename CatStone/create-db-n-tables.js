@@ -66,10 +66,10 @@ async function createTables() {
         await connection.execute(`
             CREATE TABLE IF NOT EXISTS payments (
                 payment_id INT AUTO_INCREMENT PRIMARY KEY,
-                loan_id INT NOT NULL,
+                borrower_id INT NOT NULL,
                 payment_amt DECIMAL(10, 2) NOT NULL,
                 payment_date DATE NOT NULL,
-                FOREIGN KEY (loan_id) REFERENCES loans(loan_id)
+                FOREIGN KEY (borrower_id) REFERENCES borrowers(borrower_id)
         )
         `);
 
