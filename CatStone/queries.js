@@ -18,7 +18,7 @@ async function connect() {
   }
 }
 
-// GET ALL BORROWERS AND BALANCE
+// GET ALL BORROWERS AND THEIR BALANCE
 async function getAllBorrowers() {
     const connection = await mysql.createConnection(connectionConfig);
     try {

@@ -1,5 +1,6 @@
 import { app, BrowserWindow, ipcMain }  from "electron";
 import path from "path"
+const queries = require('./queries');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -16,7 +17,67 @@ const createWindow = () => {
     },
   });
 
+  // ADD NEW BORROWER
+  ipcMain.handle('db:addBorrower', async (evt, borrowerData) => {
+    try {
+      await queries.addBorrower(borrowerData.firstName, borrowerData.lastName, borrowerData.email, borrowerData.phone, borrowerData.address);
+      console.log(`Borrower added successfully: ${borrowerData.firstName} ${borrowerData.lastName}`);
+      evt.sender.send('db:addBorrower:success', true); // Send success to frontend
+    } catch (err) {
+      console.error('Error adding borrower:', err);
+      evt.sender.send('db:addBorrower:error', err.message); // Send error to frontend
+    }
+  });
+  
+  // ADD NEW LOAN AND UPDATE ACCOUNT BALANCE
+  ipcMain.handle('db:addLoan', async (evt, loanData) => {
+    try {
+      await queries.addLoan(loanData.borrowerID, loanData.loanAmount, loanData.loanDate);
+      console.log(`Loan added successfully for borrower ${loanData.borrowerID}`);
+      evt.sender.send('db:addLoan:success', true); // Send success to frontend
+    } catch (err) {
+      console.error('Error adding loan:', err);
+      evt.sender.send('db:addLoan:error', err.message); // Send error to frontend
+    }
+  });
+  
+  // ADD NEW PAYMENT AND UPDATE ACCOUNT BALANCE
+  ipcMain.handle('db:addPayment', async (evt, paymentData) => {
+    try {
+      await queries.addPayment(paymentData.borrowerID, paymentData.paymentAmount, paymentData.paymentDate);
+      console.log(`Payment added successfully for borrower ${paymentData.borrowerID}`);
+      evt.sender.send('db:addPayment:success', true); // Send success to frontend
+    } catch (err) {
+      console.error('Error adding payment:', err);
+      evt.sender.send('db:addPayment:error', err.message); // Send error to frontend
+    }
+  });
+  
+  // GET ALL BORROWERS AND THEIR ACCOUNT BALANCE
+  ipcMain.handle('db:getAllBorrowers', async () => {
+    try {
+      const borrowers = await queries.getAllBorrowers();
+      return borrowers;
+    } catch (err) {
+      console.error('Error getting borrowers:', err);
+      throw err; 
+    }
+  });
+  
+  // GET ALL PAYMENTS MADE BY A SPECIFIED BORROWER
+  ipcMain.handle('db:getAllPaymentsByBorrower', async (evt, borrowerID) => {
+    try {
+      const payments = await queries.getAllPaymentsByBorrower(borrowerID);
+      return payments;
+    } catch (err) {
+      console.error('Error getting payments for borrower:', err);
+      throw err; 
+    }
+  });
 
+
+
+  
   //Make these async
   //Loan Creater
   ipcMain.handle("db:createLoan", async(evt,loanee,loan)=>{
