@@ -31,6 +31,7 @@
         :is="route.sfc"  
         :borrowers="borrowers"  
         :ready="ready"
+        :standby="standby"
       />
     </v-main>
   </v-layout>
@@ -47,18 +48,25 @@
 function getBorrowers (){
     const ready = ref(false)
     const borrowers = ref(null);
+    const standby = ref(false)
     //execute the search
     const exe = async()=>
     {
+      standby.value = true;
       ready.value=false;
-        window.dbDispatch.getAllBorrowers()
-        .then((borrowersIn)=>borrowers.value = borrowersIn)
-      .catch((err)=>err)
+      window.dbDispatch.getAllBorrowers()
+        .then((borrowersIn)=>{
+          borrowers.value = borrowersIn
+             ready.value = true;
+    })
+      .catch((err)=>{
+        console.error(err)
+      })
 
 
-      ready.value = true;
+   
+      standby.value =false;
     }
-
     exe();
     return {
       borrowers,
