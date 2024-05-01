@@ -1,6 +1,6 @@
 import { app, BrowserWindow, ipcMain }  from "electron";
 import path from "path"
-const queries = require('./queries');
+import queries  from "./queries";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -46,10 +46,10 @@ const createWindow = () => {
     try {
       await queries.addPayment(paymentData.borrowerID, paymentData.paymentAmount, paymentData.paymentDate);
       console.log(`Payment added successfully for borrower ${paymentData.borrowerID}`);
-      evt.sender.send('db:addPayment:success', true); // Send success to frontend
+      return Promise.resolve();
     } catch (err) {
       console.error('Error adding payment:', err);
-      evt.sender.send('db:addPayment:error', err.message); // Send error to frontend
+      return Promise.reject(err) // Send error to frontend
     }
   });
   
@@ -60,7 +60,7 @@ const createWindow = () => {
       return borrowers;
     } catch (err) {
       console.error('Error getting borrowers:', err);
-      throw err; 
+      return Promise.reject(err);
     }
   });
   
