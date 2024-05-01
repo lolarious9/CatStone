@@ -1,60 +1,93 @@
 <template>
-  <v-form v-model="valid" @keypress.enter="submitForm">
+  <v-form
+    v-if="ready"  
+    v-model="valid"
+    @keypress.enter="submitForm"
+  >
     <v-container>
       <v-row class="d-flex justify-center">
-        <v-col cols="12" md="12">
-          <v-text-field
+        <v-col
+          cols="12"
+          md="12"
+        >
+          <v-select
+         
             v-model="name"
-            :rules="nameRules"
+            item-title="name"
+            :loading="!standby"
+            :items="names"
+          
             label="Name"
             hide-details
+            return-object
             required
-          ></v-text-field>
+          />
         </v-col>
       </v-row>
 
       <v-row class="d-flex justify-center">
-        <v-col cols="12" md="12">
+        <v-col
+          cols="12"
+          md="12"
+        >
           <v-text-field
             v-model="loanAmount"
             :rules="loanAmountRules"
             label="Loan Amount"
             hide-details
             required
-          ></v-text-field>
+          />
         </v-col>
       </v-row>
 
       <v-row class="d-flex justify-center">
-        <v-col cols="12" md="12">
+        <v-col
+          cols="12"
+          md="12"
+        >
           <v-menu
             v-model="menu"
             :close-on-content-click="false"
             transition="scale-transition"
             attach
           >
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <v-text-field
                 v-model="loanDate"
                 label="Loan Date"
                 readonly
-                v-on="on"
                 v-bind="attrs"
-                @click="menu = !menu"
                 :value="loanDate ? formatDate(loanDate) : ''"
                 class="center-popup"
-              ></v-text-field>
+                v-on="on"
+                @click="menu = !menu"
+              />
             </template>
-            <v-date-picker v-model="loanDate" @input="onDateSelected"></v-date-picker>
+            <v-date-picker
+              v-model="loanDate"
+              @input="onDateSelected"
+            />
           </v-menu>
         </v-col>
       </v-row>
 
       <v-row>
-        <v-col cols="12" md="12" class="text-center">
-          <v-btn color="primary" @click="submitForm">Submit</v-btn>
+        <v-col
+          cols="12"
+          md="12"
+          class="text-center"
+        >
+          <v-btn
+            color="primary"
+            @click="submitForm"
+          >
+            Submit
+          </v-btn>
           <!-- Wrapping status pop up in div class so I can add some padding -->
-          <div class="submission-status" v-show="submissionStatus !== null">
+          <div
+            v-show="submissionStatus !== null"
+            class="submission-status"
+          >
             <v-alert :type="submissionStatus ? 'success' : 'error'">
               {{ submissionStatus ? 'Loan has been approved!' : 'Loan submission failed. Please fill out all fields correctly.' }}
             </v-alert>
@@ -65,28 +98,27 @@
   </v-form>
 </template>
 
-<style scoped>
-.center-popup .v-text-field__slot {
-  text-align: center;
-}
-
-.submission-status {
-  margin-top: 10px;
-}
-</style>
-
 <script>
 export default {
+  props:{
+    ready:Boolean,
+    standby:Boolean,
+    borrowers:{
+      type:Array,
+      default:()=>[]
+    }
+
+  },
   // Field Data
   data() {
     return {
       valid: false,
       submissionStatus: null,
 
-      name: '',
+      name: {},
       nameRules: [
         value => !!value || 'Name is required.',
-        value => (value && value.length <= 25) || 'Name must be less than 25 characters.',
+        value => (value &&  value.length <= 45) || 'Name must be less than 25 characters.',
       ],
 
       // Should allow user to only type Loan Amount using a number then a decimal place number
@@ -101,17 +133,33 @@ export default {
       menu: false,
     };
   },
-
+  computed:{
+    names(){return this.borrowers.length > 0 ?  this.borrowers.map(e=>{return{
+      name: (e.first_name+" "+ e.last_name),
+      borrowerId: e.borrower_id
+    }}):[{
+      name:"Homer Simpson",
+      borrower_id:null
+    }]}},
+ 
   methods: {
     // Submit form function
     submitForm() {
-      if (this.valid) {
+      if (this.valid && this.name.borrower_id) {
         // Setting a timer to disappear after x amount of time
-        this.submissionStatus = true;
+        window.dbDispatch.addLoan(this.name.borrower_id,this.loanAmount,this.loanDate).then(()=>{
+           this.submissionStatus = true;
 
         setTimeout(() => {
           this.submissionStatus = null;
         }, 3000);
+        })
+        .catch((e)=>{
+          console.error(e)
+          this.submissionStatus = false;
+        })
+        
+       
       } else {
         this.submissionStatus = false;
       }
@@ -127,3 +175,13 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.center-popup .v-text-field__slot {
+  text-align: center;
+}
+
+.submission-status {
+  margin-top: 10px;
+}
+</style>
