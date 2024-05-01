@@ -44,9 +44,9 @@ const createWindow = () => {
   // ADD NEW PAYMENT AND UPDATE ACCOUNT BALANCE
   ipcMain.handle('db:addPayment', async (evt, paymentData) => {
     try {
-      await queries.addPayment(paymentData.borrowerID, paymentData.paymentAmount, paymentData.paymentDate);
+      const payment = await queries.addPayment(paymentData.borrowerID, paymentData.paymentAmount, paymentData.paymentDate);
       console.log(`Payment added successfully for borrower ${paymentData.borrowerID}`);
-      return Promise.resolve();
+      return payment;
     } catch (err) {
       console.error('Error adding payment:', err);
       return Promise.reject(err); // Send error to frontend
