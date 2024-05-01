@@ -7,7 +7,6 @@
     :return-object="true"
     @update:model-value="onBorrowerSelect"
   />
-  <v-btn> View </v-btn>
   
   <v-data-table
    
