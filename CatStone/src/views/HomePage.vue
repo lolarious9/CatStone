@@ -1,9 +1,10 @@
 <template>
   <v-card
-    v-if="ready"
+    
+    v-if="borrowers"
   >
     <v-card-title>
-      Accounts: {{ numAccouts }}
+      Accounts: {{ numAccouts }} {{ borrowers }}
       <v-select
         v-model="selected"
         item-title="name"
@@ -25,36 +26,18 @@
 
 <script setup>
   import {  ref,computed} from 'vue'
- 
+  const props = defineProps({borrowers:{type:Array,default(){return []}},ready:Boolean})
   const selected  = ref(null);
   
-   function getBorrowers (){
-    const ready = ref(false)
-    const borrowers = ref(null);
-    //execute the search
-    const exe = async()=>
-    {
-      ready.value=false;
-      borrowers.value =  await window.dbDispatch.getBorrowers();   
-      ready.value = true;
-    }
-
-    exe();
-    return {
-      borrowers,
-      ready
-    }
-  }
   
-  
-  let {borrowers,ready}= getBorrowers();
 
 
 
  
   // Computed will change with the underlying object (borrowersDataIn for now)
   //let sumAccts = computed(()=> borrowers != null ? borrowers.reduce((prev,curr)=> prev+ curr.loanSum,0):"woah");
-  let numAccouts = computed(()=>borrowers.value.length != null ?  borrowers.value.length : 0)
+  
+  let numAccouts = computed(()=> props.borrowers != null ?  props.borrowers.length : 0)
   let selectedAmts = computed(()=>selected.value != null ?  {
     loans:selected.value.loans.reduce((prev,curr)=> prev+ curr.loanAmount,0),
     payments:selected.value.payments.reduce((prev,curr)=> prev+ curr.paymentAmount,0)

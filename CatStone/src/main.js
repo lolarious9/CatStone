@@ -1,6 +1,6 @@
 import { app, BrowserWindow, ipcMain }  from "electron";
 import path from "path"
-import queries  from "./queries";
+import queries  from "../queries";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -20,9 +20,9 @@ const createWindow = () => {
   // ADD NEW BORROWER
   ipcMain.handle('db:addBorrower', async (evt, borrowerData) => {
     try {
-      await queries.addBorrower(borrowerData.firstName, borrowerData.lastName, borrowerData.email, borrowerData.phone, borrowerData.address);
+     const borrowers = await queries.addBorrower(borrowerData.firstName, borrowerData.lastName, borrowerData.email, borrowerData.phone, borrowerData.address);
       console.log(`Borrower added successfully: ${borrowerData.firstName} ${borrowerData.lastName}`);
-      evt.sender.send('db:addBorrower:success', true); // Send success to frontend
+      return borrowers 
     } catch (err) {
       console.error('Error adding borrower:', err);
       return Promise.reject(err); // Send error to frontend
@@ -32,9 +32,9 @@ const createWindow = () => {
   // ADD NEW LOAN AND UPDATE ACCOUNT BALANCE
   ipcMain.handle('db:addLoan', async (evt, loanData) => {
     try {
-      await queries.addLoan(loanData.borrowerID, loanData.loanAmount, loanData.loanDate);
+      const loan = await queries.addLoan(loanData.borrowerID, loanData.loanAmount, loanData.loanDate);
       console.log(`Loan added successfully for borrower ${loanData.borrowerID}`);
-      evt.sender.send('db:addLoan:success', true); // Send success to frontend
+      return loan
     } catch (err) {
       console.error('Error adding loan:', err);
       return Promise.reject(err); // Send error to frontend

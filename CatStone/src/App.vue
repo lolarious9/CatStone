@@ -26,7 +26,12 @@
     <v-main>
       <h1>💖 Hello World!</h1>
       <p>Welcome to your Electron application.</p>
-      <component :is="route.sfc" />
+      {{ borrowers }}
+      <component
+        :is="route.sfc"  
+        :borrowers="borrowers"  
+        :ready="ready"
+      />
     </v-main>
   </v-layout>
 </template>
@@ -34,12 +39,36 @@
 <script setup>
  import { ref, computed } from 'vue'
  import routes  from "./routes.js"
-
  //Controls the current route
  let routeName =  ref("HomePage")
  function setRoute(val){
   routeName.value = val
  }
+function getBorrowers (){
+    const ready = ref(false)
+    const borrowers = ref(null);
+    //execute the search
+    const exe = async()=>
+    {
+      ready.value=false;
+        window.dbDispatch.getAllBorrowers()
+        .then((borrowersIn)=>borrowers.value = borrowersIn)
+      .catch((err)=>err)
+
+
+      ready.value = true;
+    }
+
+    exe();
+    return {
+      borrowers,
+      ready
+    }
+  }
+  
+  
+  let {borrowers,ready}= getBorrowers();
+
 
  //Computes it after changes so we dont have to.
  const route = computed(()=>{return routes[routeName.value]})

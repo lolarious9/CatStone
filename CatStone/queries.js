@@ -3,10 +3,40 @@ const mysql = require('mysql2/promise');
 const connectionConfig = {
   host: 'localhost',
   user: 'root',
-  password: ' ',
+  password: '',
   database: 'catstonedb',
 };
+import {faker} from'@faker-js/faker'
+const genPerson = async ()=>{
+  
+  const firstName=faker.person.firstName()
+  const last = faker.person.lastName()
+  const email = faker.internet.email()
+  const phone = faker.string.numeric({length:10})
+  const loc = faker.location.streetAddress(true)
 
+  console.log(phone)
+  return addBorrower(firstName,last,email,phone,loc).then(()=>addLoans)
+}
+
+
+
+const addLoans = async ()=>{
+    const tmp = await getAllBorrowers();
+    return Promise.all( tmp.map(element => 
+        async()=> addLoans([element.borrower_id,faker.finance.amount(),faker.date.past()])))
+}
+const payLoans = async()=>{
+    const tmp = await getAllBorrowers();
+    const queryLst =[]; 
+        for (let index = 0; index < 7; index++) {
+            const borrower = tmp[(Math.floor(Math.random() * tmp.length))]
+            queryLst.push(async()=>addPayment(borrower.borrower_id,faker.finance.amount({max:borrower.accountBalance})))
+        }
+       return Promise.all(queryLst)
+}
+const fakeData = async()=> genPerson()
+      
 // CREATE CONNECTION
 async function connect() {
   try {
@@ -79,10 +109,11 @@ async function getAllPaymentsByBorrower(borrowerID) {
 async function addBorrower(firstName, lastName, email, phone, address) {
   const connection = await connect();
   try {
-    await connection.query(`
+   const borrower = await connection.query(`
       INSERT INTO borrowers (first_name, last_name, borrower_email, borrower_phone, borrower_address)
       VALUES (?, ?, ?, ?, ?)
-    `, [firstName, lastName, email, phone, address]);
+    `, [firstName, lastName, email, phone, address])
+    return borrower;
   } catch (err) {
     console.error('Error adding borrower:', err);
     throw err; 
@@ -164,8 +195,16 @@ async function addPayment(borrowerID, paymentAmount, paymentDate) {
       await connection.end('Connection End');
     }
   }
-
+  export default{
+    fakeData,
+    getAllBorrowers,
+    getAllPaymentsByBorrower,
+    addPayment,
+    addLoan,
+    addBorrower,
+  }
   module.exports = {
+    fakeData,
     getAllBorrowers,
     getAllPaymentsByBorrower,
     addPayment,
