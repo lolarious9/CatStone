@@ -2,8 +2,8 @@ const mysql = require('mysql2/promise');
 
 const connectionConfig = {
   host: 'localhost',
-  user: 'your_username',
-  password: 'your_password',
+  user: 'root',
+  password: ' ',
   database: 'catstonedb',
 };
 
@@ -18,7 +18,7 @@ async function connect() {
   }
 }
 
-// GET ALL BORROWERS AND THEIR BALANCE
+// GET ALL BORROWERS AND THEIR ACCOUNT BALANCE
 async function getAllBorrowers() {
     const connection = await mysql.createConnection(connectionConfig);
     try {
@@ -48,7 +48,7 @@ async function getAllBorrowers() {
     }
   }
   
-// GET PAYMENTS FOR BORROWER
+// GET ALL PAYMENTS MADE BY A SPECIFIED BORROWER
 async function getAllPaymentsByBorrower(borrowerID) {
     const connection = await mysql.createConnection(connectionConfig);
     try {
@@ -91,7 +91,7 @@ async function addBorrower(firstName, lastName, email, phone, address) {
   }
 }
 
-// ADD LOAN  
+// ADD LOAN & UPDATE ACCOUNT BALANCE
 async function addLoan(borrowerID, loanAmount, loanDate) {
     const connection = await mysql.createConnection(connectionConfig);
   
@@ -125,7 +125,7 @@ async function addLoan(borrowerID, loanAmount, loanDate) {
     }
   }
 
-// ADD PAYMENT  
+// ADD PAYMENT & UPDATE ACCOUNT BALANCE
 async function addPayment(borrowerID, paymentAmount, paymentDate) {
     const connection = await mysql.createConnection(connectionConfig);
   
