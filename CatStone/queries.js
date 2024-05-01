@@ -130,10 +130,9 @@ async function addPayment(borrowerID, paymentAmount, paymentDate) {
     const connection = await mysql.createConnection(connectionConfig);
   
     try {
-      // Start a transaction to ensure data consistency
       await connection.beginTransaction();
   
-      // Deduct payment amount from borrower's balance
+      // Deduct amount from balance
       await connection.execute(`
         UPDATE accounts
         SET balance = balance - ?
@@ -148,9 +147,9 @@ async function addPayment(borrowerID, paymentAmount, paymentDate) {
   
       // Insert payment record
       await connection.execute(`
-        INSERT INTO payments (loan_id, payment_amt, payment_date)
+        INSERT INTO payments (borrower_id, payment_amt, payment_date)
         VALUES (?, ?, ?)
-      `, [null, paymentAmount, paymentDate]); // Assuming payments are not currently linked to specific loans
+      `, [borrowerID, paymentAmount, paymentDate]); 
   
       // Commit if both steps succeed
       await connection.commit();
