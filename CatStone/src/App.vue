@@ -26,7 +26,7 @@
     <v-main>
       <h1>💖 Hello World!</h1>
       <p>Welcome to your Electron application.</p>
-      {{ borrowers }}
+      
       <component
         :is="route.sfc"  
         :borrowers="borrowers"  

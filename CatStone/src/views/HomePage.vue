@@ -1,14 +1,17 @@
 <template>
   <v-card
     
-    v-if="borrowers"
+    v-if="ready"
   >
     <v-card-title>
-      Accounts: {{ numAccouts }} {{ borrowers }}
+      Accounts: {{ numAccouts }} 
       <v-select
         v-model="selected"
-        item-title="name"
-        :items="borrowers"
+        :loading="standby"
+        item-title="firstName"
+        :items="namesAndLoans"
+        placeholder="Borrowers"
+        no-data-text="Unable to contact database"
         return-object
       />
     </v-card-title>
@@ -26,12 +29,12 @@
 
 <script setup>
   import {  ref,computed} from 'vue'
-  const props = defineProps({borrowers:{type:Array,default(){return []}},ready:Boolean})
+  const props = defineProps({borrowers:{type:Array,default(){return null}},ready:Boolean,standby:Boolean})
   const selected  = ref(null);
   
-  
+   
 
-
+  const namesAndLoans = computed(()=>props.borrowers != null ? props.borrowers : {})
 
  
   // Computed will change with the underlying object (borrowersDataIn for now)

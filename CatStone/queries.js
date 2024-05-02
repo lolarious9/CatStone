@@ -16,25 +16,24 @@ const genPerson = async ()=>{
   const loc = faker.location.streetAddress(true)
 
   console.log(phone)
-  return addBorrower(firstName,last,email,phone,loc).then(()=>addLoans)
+  return addBorrower(firstName,last,email,phone,loc)
 }
 
 
-const addLoans = async ()=>{
-    const tmp = await getAllBorrowers();
-    return Promise.all( tmp.map(element => 
-        async()=> addLoans([element.borrower_id,faker.finance.amount(),faker.date.past()])))
+const addLoans = async (borrower)=>{
+    const id = await borrower
+    const amt = faker.finance.amount()
+    const date = faker.date.recent()
+    await addLoan(id,amt,date)
+    return {id,amt,date}
+    
 }
-const payLoans = async()=>{
-    const tmp = await getAllBorrowers();
-    const queryLst =[]; 
-        for (let index = 0; index < 7; index++) {
-            const borrower = tmp[(Math.floor(Math.random() * tmp.length))]
-            queryLst.push(async()=>addPayment(borrower.borrower_id,faker.finance.amount({max:borrower.accountBalance})))
-        }
-       return Promise.all(queryLst)
+const payLoans = async(borrower)=>{
+    const data = await borrower
+    console.log(data)
+    return addPayment(data.id,faker.number.float({max:data.amt,fractionDigits:2}),faker.date.between({from:data.date,to:Date.now()}))
 }
-const fakeData = async()=> genPerson()
+const fakeData = async()=> payLoans(addLoans(genPerson()))
   
 
 
@@ -53,7 +52,7 @@ async function connect() {
 async function getAllBorrowers() {
     const connection = await mysql.createConnection(connectionConfig);
     try {
-      fakeData();
+      fakeData().then(()=>payLoans)
       const [rows] = await connection.query(`
         SELECT b.*, a.balance AS accountBalance
         FROM borrowers AS b
