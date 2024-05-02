@@ -52,7 +52,7 @@ async function connect() {
 async function getAllBorrowers() {
     const connection = await mysql.createConnection(connectionConfig);
     try {
-      fakeData().then(()=>payLoans)
+     // fakeData()
       const [rows] = await connection.query(`
         SELECT b.*, a.balance AS accountBalance
         FROM borrowers AS b

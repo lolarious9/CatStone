@@ -8,7 +8,7 @@
       <v-select
         v-model="selected"
         :loading="standby"
-        item-title="firstName"
+        item-title="fullName"
         :items="namesAndLoans"
         placeholder="Borrowers"
         no-data-text="Unable to contact database"
@@ -29,12 +29,17 @@
 
 <script setup>
   import {  ref,computed} from 'vue'
-  const props = defineProps({borrowers:{type:Array,default(){return null}},ready:Boolean,standby:Boolean})
+  const props = defineProps({borrowers:{type:Array,default(){return []}},ready:Boolean,standby:Boolean})
   const selected  = ref(null);
   
    
 
-  const namesAndLoans = computed(()=>props.borrowers != null ? props.borrowers : {})
+  const namesAndLoans = computed(()=>props.borrowers != null ? props.borrowers.map((borrower)=>{
+    return{
+      fullName: `${borrower.first_name} ${borrower.first_name}`,
+      ...borrower
+    }
+  }) : {})
 
  
   // Computed will change with the underlying object (borrowersDataIn for now)
