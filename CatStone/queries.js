@@ -20,7 +20,6 @@ const genPerson = async ()=>{
 }
 
 
-
 const addLoans = async ()=>{
     const tmp = await getAllBorrowers();
     return Promise.all( tmp.map(element => 
@@ -36,7 +35,9 @@ const payLoans = async()=>{
        return Promise.all(queryLst)
 }
 const fakeData = async()=> genPerson()
-      
+  
+
+
 // CREATE CONNECTION
 async function connect() {
   try {
@@ -105,7 +106,7 @@ async function getAllPaymentsByBorrower(borrowerID) {
   }
   
 
-// ADD BORROWER 
+// ADD BORROWER AND CREATE ACCOUNT
 async function addBorrower(firstName, lastName, email, phone, address) {
   const connection = await connect();
   try {
@@ -115,20 +116,20 @@ async function addBorrower(firstName, lastName, email, phone, address) {
       VALUES (?, ?, ?, ?, ?)
     `, [firstName, lastName, email, phone, address]);
 
-    // Get borrower ID
+    // Get borrower id
     const borrowerID = await connection.query('SELECT LAST_INSERT_ID() AS id');
     const borrowerIDValue = borrowerID[0].id; 
 
-    // Create account with ID
+    // Create account with id and a zero balance
     await connection.execute(`
       INSERT INTO accounts (borrower_id, balance)
       VALUES (?, ?)
-    `, [borrowerIDValue, 0.00]); // Assuming initial balance is 0
+    `, [borrowerIDValue, 0.00]); 
 
-    await connection.commit(); // Commit changes if both inserts succeed
+    await connection.commit(); // Commit changes
     console.log(`Borrower added with ID: ${borrowerIDValue}`);
 
-    return borrowerIDValue; // Return the generated borrower ID
+    return borrowerIDValue; 
   } catch (err) {
     console.error('Error adding borrower:', err);
     throw err; 
@@ -157,7 +158,7 @@ async function addLoan(borrowerID, loanAmount, loanDate) {
         VALUES (?, ?, ?)
       `, [borrowerID, loanAmount, loanDate]);
   
-      // Commit if both steps succeed
+      // Commit if steps succeed
       await connection.commit();
       console.log(`Loan of ${loanAmount} added for borrower ${borrowerID}`);
   
@@ -165,7 +166,7 @@ async function addLoan(borrowerID, loanAmount, loanDate) {
       console.error('Error adding loan:', error);
       // Rollback if any errors occur
       await connection.rollback();
-      throw error; // Re-throw for handling in main.js
+      throw error; 
     } finally {
       await connection.end('Connection End');
     }
@@ -197,7 +198,7 @@ async function addPayment(borrowerID, paymentAmount, paymentDate) {
         VALUES (?, ?, ?)
       `, [borrowerID, paymentAmount, paymentDate]); 
   
-      // Commit if both steps succeed
+      // Commit if steps succeed
       await connection.commit();
       console.log(`Payment of ${paymentAmount} added for borrower ${borrowerID}`);
   
