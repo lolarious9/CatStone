@@ -1,4 +1,5 @@
 <template>
+  <h1>Add a Borrower</h1>
   <v-form
     v-model="valid"
     @keypress.enter="submitForm"
@@ -207,9 +208,11 @@ export default{
     methods: {
     // Submit form function
     submitForm() {
-      if (this.valid) {
+   
+      if (this.valid ) {
+        console.log(this.firstname)
         // Setting a timer to disappear after x amount of time
-        window.dbDispatch.addLoan({borrowerID:this.name.borrowerId,loanAmount: this.loanAmount,loanDate:this.loanDate}).then(()=>{
+        window.dbDispatch.addBorrower({firstName:this.firstname,lastName:this.lastname,email:this.email,phone:this.phone.replace(/\D+/gi,""),address:this.streetAddress}).then(()=>{
            this.submissionStatus = true;
 
         setTimeout(() => {

@@ -3,7 +3,7 @@ const mysql = require('mysql2/promise');
 const connectionConfig = {
   host: 'localhost',
   user: 'root',
-  password: " ",
+  password: "",
   database: 'catstonedb',
 };
 
@@ -183,7 +183,7 @@ async function addPayment(borrowerID, paymentAmount, paymentDate) {
     }
   }
   export default{
-    fakeData,
+
     getAllBorrowers,
     getAllPaymentsByBorrower,
     addPayment,
@@ -191,7 +191,7 @@ async function addPayment(borrowerID, paymentAmount, paymentDate) {
     addBorrower,
   }
   module.exports = {
-    fakeData,
+    
     getAllBorrowers,
     getAllPaymentsByBorrower,
     addPayment,

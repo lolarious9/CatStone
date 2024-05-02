@@ -1,5 +1,5 @@
 <template>
-  <h1>Catstone Loan Program</h1>
+  <h1>Loan Tracking System</h1>
   <v-card
     
     v-if="ready"

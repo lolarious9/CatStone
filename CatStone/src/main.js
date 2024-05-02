@@ -20,6 +20,7 @@ const createWindow = () => {
   // ADD NEW BORROWER
   ipcMain.handle('db:addBorrower', async (evt, borrowerData) => {
     try {
+    
      const borrowers = await queries.addBorrower(borrowerData.firstName, borrowerData.lastName, borrowerData.email, borrowerData.phone, borrowerData.address);
       console.log(`Borrower added successfully: ${borrowerData.firstName} ${borrowerData.lastName}`);
       return borrowers 
