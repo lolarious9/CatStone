@@ -3,7 +3,7 @@ const mysql = require('mysql2/promise');
 const connectionConfig = {
   host: 'localhost',
   user: 'root',
-  password: "",
+  password: "passwordmo$Wafafa$1241$3#",
   database: 'catstonedb',
 };
 
