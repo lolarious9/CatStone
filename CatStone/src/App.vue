@@ -26,13 +26,7 @@
     <v-main>
       <h1>💖 Hello World!</h1>
       <p>Welcome to your Electron application.</p>
-      
-      <component
-        :is="route.sfc"  
-        :borrowers="borrowers"  
-        :ready="ready"
-        :standby="standby"
-      />
+      <component :is="route.sfc" />
     </v-main>
   </v-layout>
 </template>
@@ -40,47 +34,15 @@
 <script setup>
  import { ref, computed } from 'vue'
  import routes  from "./routes.js"
+
  //Controls the current route
  let routeName =  ref("HomePage")
  function setRoute(val){
-  routeName.value = val.replace(" ","")
+  routeName.value = val
  }
-function getBorrowers (){
-    const ready = ref(false)
-    const borrowers = ref(null);
-    const standby = ref(false)
-    //execute the search
-    const exe = async()=>
-    {
-      standby.value = true;
-      ready.value=false;
-      window.dbDispatch.getAllBorrowers()
-        .then((borrowersIn)=>{
-          borrowers.value = borrowersIn
-             ready.value = true;
-    })
-      .catch((err)=>{
-        console.error(err)
-      })
-
-
-   
-      standby.value = false;
-    }
-    exe();
-    return {
-      borrowers,
-      ready,
-      standby
-    }
-  }
-  
-  
-  let {borrowers,ready,standby}= getBorrowers();
-
 
  //Computes it after changes so we dont have to.
-  const route = computed(()=>{return routes[routeName.value]})
+ const route = computed(()=>{return routes[routeName.value]})
 
  console.log('👋 This message is being logged by "App.vue", included via Vite');
 
