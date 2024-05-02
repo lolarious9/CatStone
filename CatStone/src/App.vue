@@ -40,7 +40,7 @@
  //Controls the current route
  let routeName =  ref("HomePage")
  function setRoute(val){
-  routeName.value = val
+  routeName.value = val.replace(" ","")
  }
 function getBorrowers (){
     const ready = ref(false)
@@ -77,7 +77,7 @@ function getBorrowers (){
 
 
  //Computes it after changes so we dont have to.
- const route = computed(()=>{return routes[routeName.value]})
+  const route = computed(()=>{return routes[routeName.value]})
 
  console.log('👋 This message is being logged by "App.vue", included via Vite');
 
