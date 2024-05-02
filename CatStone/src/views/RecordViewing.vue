@@ -2,11 +2,18 @@
   <v-select
     v-model="selected"
     :items="users"
-    item-title="name"
+    item-title="fullName"
     label="Select an account"
     :return-object="true"
   />
-  
+  <div
+    v-if="selected"
+    class="text-h6 font-weight-black"
+  >
+    Balance: ${{ selected.accountBalance }}
+    Payments: ${{ selectedAmts }}
+    Total Remaining: ${{ total }}
+  </div>
   
   <v-data-table
     v-if="readySelect"
@@ -15,8 +22,9 @@
   >
     <template #item="{ item }">
       <tr>
-        <td>{{ item.paymentID }}</td>
-        <td>{{ item.paymentAmount }}</td>
+        <td>{{ item.payment_id }}</td>
+        <td>{{ item.payment_amt }}</td>
+        <td>{{ item.payment_date }}</td>
       </tr>
     </template>
   </v-data-table>
@@ -24,15 +32,10 @@
   
   <script setup>
   import { ref,computed,watch} from 'vue'
-    const header1 = [
-      { title: 'Loan ID' },
-      { title: 'Loan Amount' },
-      { title: 'Loan Date' },
-    ]
-    
+   
   const props = defineProps({borrowers:{type:Array,default(){return []}},ready:Boolean,standby:Boolean})
   const selected  = ref(null);
-  const success = ref(null);
+ 
   
   const selectedBorrower = ref(null)
   const readySelect = ref(false);  
@@ -44,7 +47,7 @@
       ...borrower
     }
   }) : {})
-    const header2 = [{ title: 'Payment ID' }, { title: 'Payment Amount' }]
+    const header2 = [{ title: 'Payment ID' }, { title: 'Payment Amount' },{title:'Payment Date'}]
    watch(selected, async()=>{ 
     readySelect.value = false;
     
