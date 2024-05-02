@@ -15,9 +15,16 @@
         return-object
       />
     </v-card-title>
-    <v-card-text v-if="selected">
-      {{ selected }}
-      {{ selectedBorrower }}
+    <v-card-text v-if="infoReady">
+      <p class="text-h6 font-weight-black">
+        Name: {{ selected.name }}
+      </p>
+      Balance: ${{ selected.accountBalance }}
+      Payments: ${{ selectedAmts }}
+      Total: ${{ total }}
+    </v-card-text>
+    <v-card-text v-if="!infoReady">
+      No payments found
     </v-card-text>
   </v-card>
 </template>
@@ -36,10 +43,11 @@
     }
   }) : {})
 
-  
+  let infoReady = computed(()=>readySelect.value && selectedAmts.value != -1)
   // Computed will change with the underlying object (borrowersDataIn for now)
   //let sumAccts = computed(()=> borrowers != null ? borrowers.reduce((prev,curr)=> prev+ curr.loanSum,0):"woah");
-  //let selectedAmts = computed(()=>readySelect.value ? selectedBorrowe)
+  let selectedAmts = ref(-1.0) 
+  let total = ref(0.0)
   let numAccouts = computed(()=> props.borrowers != null ?  props.borrowers.length : 0)
   const selectedBorrower = ref(null)
   const readySelect = ref(false);  
@@ -48,6 +56,8 @@
     
       window.dbDispatch.getAllPaymentsByBorrower(selected.value.borrower_id)
       .then((v)=>{
+        selectedAmts.value = v.reduce((prev,curr)=>prev + parseFloat(curr.payment_amt),0)
+        total.value = Math.round(((parseFloat(selected.value.accountBalance)- selectedAmts.value)+Number.EPSILON)*100)/100
         selectedBorrower.value=v
         console.log(v)
         readySelect.value = true
