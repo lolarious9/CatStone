@@ -1,4 +1,5 @@
 <template>
+  <h1>View an Account</h1>
   <v-select
     v-model="selected"
     :items="users"
@@ -10,9 +11,9 @@
     v-if="selected"
     class="text-h6 font-weight-black"
   >
-    Balance: ${{ selected.accountBalance }}
+    Total Loans: ${{ selected.accountBalance }}
     Payments: ${{ selectedAmts }}
-    Total Remaining: ${{ total }}
+    Balance Remaining: ${{ total }}
   </div>
   
   <v-data-table

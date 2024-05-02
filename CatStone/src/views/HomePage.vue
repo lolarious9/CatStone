@@ -1,4 +1,5 @@
 <template>
+  <h1>Catstone Loan Program</h1>
   <v-card
     
     v-if="ready"
@@ -50,7 +51,8 @@
   let total = ref(0.0)
   let numAccouts = computed(()=> props.borrowers != null ?  props.borrowers.length : 0)
   const selectedBorrower = ref(null)
-  const readySelect = ref(false);  
+  const readySelect = ref(false); 
+  
   watch(selected, async()=>{ 
     readySelect.value = false;
     

@@ -1,8 +1,10 @@
 <template>
   <v-sheet
+  
     class="mx-auto"
     width="300"
   >
+    <h1>Add Payment</h1>
     <v-form @submit.prevent="submitPayment">
       <v-text-field
         v-model="Name"
@@ -57,7 +59,7 @@
       const day = ('0' + date.getDate()).slice(-2);
       const month = ('0' + (date.getMonth() + 1)).slice(-2);
       const year = date.getFullYear();
-      return `${month}/${day}/${year}`;
+      return `${year}/${month}/${day}`;
     }
 
     const submitPayment = ()=> window.dbDispatch.addPayment({

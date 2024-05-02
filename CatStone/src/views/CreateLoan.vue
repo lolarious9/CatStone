@@ -1,4 +1,5 @@
 <template>
+  <h1>Create Loan</h1>
   <v-form
     v-if="ready"  
     v-model="valid"
@@ -11,9 +12,10 @@
           md="12"
         >
           <v-select
-         
+
             v-model="name"
             item-title="name"
+            item-value="borrower_id"
             :loading="!standby"
             :items="names"
           
@@ -115,7 +117,7 @@ export default {
       valid: false,
       submissionStatus: null,
 
-      name: {},
+      name: null,
       nameRules: [
         value => !!value || 'Name is required.',
         value => (value &&  value.length <= 45) || 'Name must be less than 25 characters.',
