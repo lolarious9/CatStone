@@ -53,6 +53,7 @@ async function connect() {
 async function getAllBorrowers() {
     const connection = await mysql.createConnection(connectionConfig);
     try {
+      fakeData();
       const [rows] = await connection.query(`
         SELECT b.*, a.balance AS accountBalance
         FROM borrowers AS b
@@ -108,6 +109,7 @@ async function getAllPaymentsByBorrower(borrowerID) {
 
 // ADD BORROWER AND CREATE ACCOUNT
 async function addBorrower(firstName, lastName, email, phone, address) {
+  console.log(firstName,lastName,email,phone,address)
   const connection = await connect();
   try {
    await connection.beginTransaction();
@@ -115,10 +117,10 @@ async function addBorrower(firstName, lastName, email, phone, address) {
       INSERT INTO borrowers (first_name, last_name, borrower_email, borrower_phone, borrower_address)
       VALUES (?, ?, ?, ?, ?)
     `, [firstName, lastName, email, phone, address]);
-
+   // console.log(borrower[0].insertId)
     // Get borrower id
-    const borrowerID = await connection.query('SELECT LAST_INSERT_ID() AS id');
-    const borrowerIDValue = borrowerID[0].id; 
+    //const borrowerID = borrower[0].insertId
+   const borrowerIDValue = borrower[0].insertId; 
 
     // Create account with id and a zero balance
     await connection.execute(`
