@@ -1,8 +1,14 @@
 <template>
-  <v-form v-model="valid" @keypress.enter="submitForm">
+  <v-form
+    v-model="valid"
+    @keypress.enter="submitForm"
+  >
     <v-container>
       <v-row class="d-flex justify-center">
-        <v-col cols="12" md="6">
+        <v-col
+          cols="12"
+          md="6"
+        >
           <v-text-field
             v-model="firstname"
             :counter="10"
@@ -10,10 +16,13 @@
             label="First name"
             hide-details
             required
-          ></v-text-field>
+          />
         </v-col>
 
-        <v-col cols="12" md="6">
+        <v-col
+          cols="12"
+          md="6"
+        >
           <v-text-field
             v-model="lastname"
             :counter="10"
@@ -21,36 +30,45 @@
             label="Last name"
             hide-details
             required
-          ></v-text-field>
+          />
         </v-col>
       </v-row>
 
       <v-row class="d-flex justify-center">
-        <v-col cols="12" md="6">
+        <v-col
+          cols="12"
+          md="6"
+        >
           <v-text-field
             v-model="email"
             :rules="emailRules"
             label="E-mail"
             hide-details
             required
-          ></v-text-field>
+          />
         </v-col>
 
-        <v-col cols="12" md="6">
+        <v-col
+          cols="12"
+          md="6"
+        >
           <v-text-field
             v-model="phone"
+            v-mask="'(###) ###-####'"
             :rules="phoneRules"
             label="Phone"
             hide-details
             required
-            v-mask="'(###) ###-####'"
             @input="formatPhoneNumber"
-          ></v-text-field>
+          />
         </v-col>
       </v-row>
 
       <v-row class="d-flex justify-center">
-        <v-col cols="12" md="12">
+        <v-col
+          cols="12"
+          md="12"
+        >
           <v-text-field
             v-model="dob"
             :rules="dobRules"
@@ -58,27 +76,42 @@
             hide-details
             required
             @input="restrictDOBInput"
-          ></v-text-field>
+          />
         </v-col>
       </v-row>
 
       <v-row class="d-flex justify-center">
-        <v-col cols="12" md="12">
+        <v-col
+          cols="12"
+          md="12"
+        >
           <v-text-field
             v-model="streetAddress"
             :rules="streetAddressRules"
             label="Street Address"
             hide-details
             required
-          ></v-text-field>
+          />
         </v-col>
       </v-row>
 
       <v-row>
-        <v-col cols="12" md="12" class="text-center">
-          <v-btn color="primary" @click="submitForm">Submit</v-btn>
+        <v-col
+          cols="12"
+          md="12"
+          class="text-center"
+        >
+          <v-btn
+            color="primary"
+            @click="submitForm"
+          >
+            Submit
+          </v-btn>
           <!-- Wrapping status pop up in div class so I can add some padding -->
-          <div class="submission-status" v-show="submissionStatus !== null">
+          <div
+            v-show="submissionStatus !== null"
+            class="submission-status"
+          >
             <v-alert :type="submissionStatus ? 'success' : 'error'">
               {{ submissionStatus ? 'Form submitted successfully! 🎉' : 'Form submission failed. Please fill out all fields correctly.' }}
             </v-alert>
@@ -89,19 +122,20 @@
   </v-form>
 </template>
 
-<style>
-  /* Adding some padding so pop up isn't so close to Submit button */
-  .submission-status {
-  margin-top: 10px;
-  }
-</style>
-
 <script>
 import VueMaskPlugin from 'v-mask';
 
 export default{
   plugins: [VueMaskPlugin],
+  props:{
+    ready:Boolean,
+    standby:Boolean,
+    borrowers:{
+      type:Array,
+      default:()=>[]
+    }
 
+  },
   // Field Data - First Name, Last Name, Email, etc.
   data: () => ({
       valid: false,
@@ -175,11 +209,17 @@ export default{
     submitForm() {
       if (this.valid) {
         // Setting a timer to disappear after x amount of time
-        this.submissionStatus = true;
+        window.dbDispatch.addLoan({borrowerID:this.name.borrowerId,loanAmount: this.loanAmount,loanDate:this.loanDate}).then(()=>{
+           this.submissionStatus = true;
 
         setTimeout(() => {
           this.submissionStatus = null;
         }, 3000);
+        })
+        .catch((e)=>{
+          console.error(e)
+          this.submissionStatus = false;
+        })
       } else {
         this.submissionStatus = false;
       }
@@ -209,3 +249,10 @@ export default{
   },
 }
 </script>
+
+<style>
+  /* Adding some padding so pop up isn't so close to Submit button */
+  .submission-status {
+  margin-top: 10px;
+  }
+</style>

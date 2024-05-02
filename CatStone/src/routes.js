@@ -1,13 +1,12 @@
 import Home from "./views/HomePage.vue"
-import GetBorrower from "./views/GetBorrower.vue"
+import CreateBorrower from "./views/CreateBorrower.vue"
 export default{
     "HomePage":{ 
         sfc: Home,
-        title:"HomePage"
-       
+        title:"Home Page"
     },
-   "GetBorrower":{
-        sfc:GetBorrower,
-        title:"GetBorrower"  
+   "CreateBorrower":{
+        sfc:CreateBorrower,
+        title:"Create Borrower"  
     }
 }
