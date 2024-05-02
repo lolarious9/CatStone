@@ -176,7 +176,7 @@ async function addLoan(borrowerID, loanAmount, loanDate) {
 // ADD PAYMENT & UPDATE ACCOUNT BALANCE
 async function addPayment(borrowerID, paymentAmount, paymentDate) {
     const connection = await mysql.createConnection(connectionConfig);
-  
+   console.log(`addPayment called: ${borrowerID} ${paymentAmount} ${paymentDate}`)
     try {
       await connection.beginTransaction();
   

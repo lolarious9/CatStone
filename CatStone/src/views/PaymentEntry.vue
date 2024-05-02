@@ -18,6 +18,7 @@
         no-data-text="Unable to contact database"
         return-object
       />
+   
       <v-text-field
         v-model="PaymentAmount"
         :rules="paymentRules"
@@ -35,7 +36,7 @@
 </template>
   
   <script setup>
-   import {  ref,computed,} from 'vue'
+   import {  ref,computed,watch} from 'vue'
   const props = defineProps({borrowers:{type:Array,default(){return []}},ready:Boolean,standby:Boolean})
   const selected  = ref(null);
   const success = ref(null);
@@ -45,14 +46,26 @@
       ...borrower
     }
   }) : {})
-
+    watch(selected,()=>{
+      if(selected.value.fullName){
+      Name.value = selected.value.fullName
+      }
+    })
     const Name = ref('')
     const PaymentAmount = ref('')
+    function formatDate(date) {
+      const day = ('0' + date.getDate()).slice(-2);
+      const month = ('0' + (date.getMonth() + 1)).slice(-2);
+      const year = date.getFullYear();
+      return `${month}/${day}/${year}`;
+    }
+
     const submitPayment = ()=> window.dbDispatch.addPayment({
-      borrowerID: selected.value.borrowerId,
+      borrowerID: selected.value.borrower_id,
       paymentAmount: parseFloat(PaymentAmount.value),
-      paymentDate: Date.now()
+      paymentDate: formatDate(new Date(Date.now()))
     }).then(()=>{success.value = true}).catch((e)=>{
+      console.log(selected.value)
       console.error(e)
       success.value = false
     })
