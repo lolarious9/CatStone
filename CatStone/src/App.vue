@@ -65,17 +65,18 @@ function getBorrowers (){
 
 
    
-      standby.value =false;
+      standby.value = false;
     }
     exe();
     return {
       borrowers,
-      ready
+      ready,
+      standby
     }
   }
   
   
-  let {borrowers,ready}= getBorrowers();
+  let {borrowers,ready,standby}= getBorrowers();
 
 
  //Computes it after changes so we dont have to.
