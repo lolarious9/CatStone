@@ -96,10 +96,10 @@ async function getAllPaymentsByBorrower(borrowerID) {
         payment_date: row.payment_date,
       }));
   
-      return formattedPayments;
+      return Promise.resolve(formattedPayments);
     } catch (err) {
       console.error('Error getting payments for borrower:', err);
-      throw err; 
+      return Promise.reject(err) 
     } finally {
       await connection.end(); 
     }
