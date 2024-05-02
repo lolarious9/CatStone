@@ -38,7 +38,7 @@
 
   const namesAndLoans = computed(()=>props.borrowers != null ? props.borrowers.map((borrower)=>{
     return{
-      fullName: `${borrower.first_name} ${borrower.first_name}`,
+      fullName: `${borrower.first_name} ${borrower.last_name}`,
       ...borrower
     }
   }) : {})

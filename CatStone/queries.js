@@ -142,7 +142,7 @@ async function addBorrower(firstName, lastName, email, phone, address) {
 // ADD LOAN & UPDATE ACCOUNT BALANCE
 async function addLoan(borrowerID, loanAmount, loanDate) {
     const connection = await mysql.createConnection(connectionConfig);
-  
+    console.log(`addLoan called: ${borrowerID} ${loanAmount} ${loanDate}`)
     try {
       await connection.beginTransaction();
   
@@ -162,12 +162,12 @@ async function addLoan(borrowerID, loanAmount, loanDate) {
       // Commit if steps succeed
       await connection.commit();
       console.log(`Loan of ${loanAmount} added for borrower ${borrowerID}`);
-  
+      Promise.resolve()
     } catch (error) {
       console.error('Error adding loan:', error);
       // Rollback if any errors occur
       await connection.rollback();
-      throw error; 
+      Promise.reject(error)
     } finally {
       await connection.end('Connection End');
     }

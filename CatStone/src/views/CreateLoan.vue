@@ -145,9 +145,10 @@ export default {
   methods: {
     // Submit form function
     submitForm() {
-      if (this.valid && this.name.borrower_id) {
+      console.log(this.name)
+      if (this.valid && this.name.borrowerId) {
         // Setting a timer to disappear after x amount of time
-        window.dbDispatch.addLoan(this.name.borrower_id,this.loanAmount,this.loanDate).then(()=>{
+        window.dbDispatch.addLoan({borrowerID:this.name.borrowerId,loanAmount: this.loanAmount,loanDate:this.loanDate}).then(()=>{
            this.submissionStatus = true;
 
         setTimeout(() => {
