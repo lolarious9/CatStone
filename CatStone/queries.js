@@ -3,39 +3,9 @@ const mysql = require('mysql2/promise');
 const connectionConfig = {
   host: 'localhost',
   user: 'root',
-  password: '',
+  password: " ",
   database: 'catstonedb',
 };
-import {faker} from'@faker-js/faker'
-const genPerson = async ()=>{
-  
-  const firstName=faker.person.firstName()
-  const last = faker.person.lastName()
-  const email = faker.internet.email()
-  const phone = faker.string.numeric({length:10})
-  const loc = faker.location.streetAddress(true)
-
-  console.log(phone)
-  return addBorrower(firstName,last,email,phone,loc)
-}
-
-
-const addLoans = async (borrower)=>{
-    const id = await borrower
-    const amt = faker.finance.amount()
-    const date = faker.date.recent()
-    await addLoan(id,amt,date)
-    return {id,amt,date}
-    
-}
-const payLoans = async(borrower)=>{
-    const data = await borrower
-    console.log(data)
-    return addPayment(data.id,faker.number.float({max:data.amt,fractionDigits:2}),faker.date.between({from:data.date,to:Date.now()}))
-}
-const fakeData = async()=> payLoans(addLoans(genPerson()))
-  
-
 
 // CREATE CONNECTION
 async function connect() {
