@@ -109,11 +109,26 @@ async function getAllPaymentsByBorrower(borrowerID) {
 async function addBorrower(firstName, lastName, email, phone, address) {
   const connection = await connect();
   try {
+   await connection.beginTransaction();
    const borrower = await connection.query(`
       INSERT INTO borrowers (first_name, last_name, borrower_email, borrower_phone, borrower_address)
       VALUES (?, ?, ?, ?, ?)
-    `, [firstName, lastName, email, phone, address])
-    return borrower;
+    `, [firstName, lastName, email, phone, address]);
+
+    // Get borrower ID
+    const borrowerID = await connection.query('SELECT LAST_INSERT_ID() AS id');
+    const borrowerIDValue = borrowerID[0].id; 
+
+    // Create account with ID
+    await connection.execute(`
+      INSERT INTO accounts (borrower_id, balance)
+      VALUES (?, ?)
+    `, [borrowerIDValue, 0.00]); // Assuming initial balance is 0
+
+    await connection.commit(); // Commit changes if both inserts succeed
+    console.log(`Borrower added with ID: ${borrowerIDValue}`);
+
+    return borrowerIDValue; // Return the generated borrower ID
   } catch (err) {
     console.error('Error adding borrower:', err);
     throw err; 
