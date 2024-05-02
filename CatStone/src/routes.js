@@ -6,19 +6,19 @@ import CreateBorrower from "./views/CreateBorrower.vue"
 export default{
     "HomePage":{ 
         sfc: Home,
-        title:"HomePage"
+        title:"Home Page"
     },
    "CreateLoan":{
         sfc:CreateLoan,
-        title:"CreateLoan"  
+        title:"Create Loan"  
     },
     "RecordViewing":{
         sfc:RecordViewing,
-        title:"RecordViewing"
+        title:"Record Viewing"
     },
     "PaymentEntry":{
         sfc:PaymentEntry,
-        title:"PaymentEntry"  
+        title:"Payment Entry"  
     },
      "CreateBorrower":{
         sfc:CreateBorrower,

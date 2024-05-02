@@ -20,13 +20,10 @@
           </v-list>
         </v-menu>
       </template>
-      <v-app-bar-title>CatStone</v-app-bar-title>
+      <v-app-bar-title>Loan Tracking System</v-app-bar-title>
     </v-app-bar>
-
+   
     <v-main>
-      <h1>💖 Hello World!</h1>
-      <p>Welcome to your Electron application.</p>
-      
       <component
         :is="route.sfc"  
         :borrowers="borrowers"  

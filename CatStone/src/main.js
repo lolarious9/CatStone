@@ -1,5 +1,6 @@
 import { app, BrowserWindow, ipcMain }  from "electron";
 import path from "path"
+import queries  from "../queries";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -16,99 +17,68 @@ const createWindow = () => {
     },
   });
 
-
-  //Make these async
-  //Loan Creater
-  ipcMain.handle("db:createLoan", async(evt,loanee,loan)=>{
+  // ADD NEW BORROWER
+  ipcMain.handle('db:addBorrower', async (evt, borrowerData) => {
+    try {
     
-    // create db entry 
-    console.log(`${evt}\t${loanee},${loan}`)
-   
-  })
-  
-  //Get borrowers and their loans
-   ipcMain.handle("db:getBorrowers",async (evt, constraints = null)=>{
-    if (!constraints){
-      //  Return DB CALL FOR ALL BORROWERS WITH LOANS
-       return Promise.resolve([
-      {
-        name: 'User 1',
-        loans: [
-          {
-            loanID: 1,
-            loanAmount: 123,
-            loanDate: new Date('3/17/24'),
-          },
-        ],
-        payments: [
-          {
-            paymentID: 1,
-            paymentAmount: 150,
-          },
-          {
-            paymentID: 2,
-            paymentAmount: 150,
-          },
-        ],
-      },
-      {
-        name: 'User 2',
-        loans: [
-          {
-            loanID: 2,
-            loanAmount: 41233,
-            loanDate: new Date('3/24/24'),
-          },
-        ],
-        payments: [
-          {
-            paymentID: 3,
-            paymentAmount: 100,
-          },
-          {
-            paymentID: 4,
-            paymentAmount: 200,
-          },
-        ],
-      },
-      {
-        name: 'User 3',
-        loans: [
-          {
-            loanID: 4,
-            loanAmount: 3200,
-            loanDate: new Date('4/7/24'),
-          },
-        ],
-        payments: [
-          {
-            paymentID: 5,
-            paymentAmount: 125,
-          },
-          {
-            paymentID: 6,
-            paymentAmount: 175,
-          },
-        ],
-      },   
-    ] );
+     const borrowers = await queries.addBorrower(borrowerData.firstName, borrowerData.lastName, borrowerData.email, borrowerData.phone, borrowerData.address);
+      console.log(`Borrower added successfully: ${borrowerData.firstName} ${borrowerData.lastName}`);
+      return borrowers 
+    } catch (err) {
+      console.error('Error adding borrower:', err);
+      return Promise.reject(err); // Send error to frontend
     }
+  });
+  
+  // ADD NEW LOAN AND UPDATE ACCOUNT BALANCE
+  ipcMain.handle('db:addLoan', async (evt, loanData) => {
+    try {
+      const loan = await queries.addLoan(loanData.borrowerID, loanData.loanAmount, loanData.loanDate);
+      console.log(`Loan added successfully for borrower ${loanData.borrowerID}`);
+      return loan
+    } catch (err) {
+      console.error('Error adding loan:', err);
+      return Promise.reject(err); // Send error to frontend
+    }
+  });
+  
+  // ADD NEW PAYMENT AND UPDATE ACCOUNT BALANCE
+  ipcMain.handle('db:addPayment', async (evt, paymentData) => {
+    try {
+      const payment = await queries.addPayment(paymentData.borrowerID, paymentData.paymentAmount, paymentData.paymentDate);
+      console.log(`Payment added successfully for borrower ${paymentData.borrowerID}`);
+      return payment;
+    } catch (err) {
+      console.error('Error adding payment:', err);
+      return Promise.reject(err); // Send error to frontend
+    }
+  });
+  
+  // GET ALL BORROWERS AND THEIR ACCOUNT BALANCE
+  ipcMain.handle('db:getAllBorrowers', async () => {
+    try {
+      const borrowers = await queries.getAllBorrowers();
+      return borrowers;
+    } catch (err) {
+      console.error('Error getting borrowers:', err);
+      return Promise.reject(err);
+    }
+  });
+  
+  // GET ALL PAYMENTS MADE BY A SPECIFIED BORROWER
+  ipcMain.handle('db:getAllPaymentsByBorrower', async (evt, borrowerID) => {
+    try {
+      const payments = await queries.getAllPaymentsByBorrower(borrowerID);
+      return payments;
+    } catch (err) {
+      console.error('Error getting payments for borrower:', err);
+      return Promise.reject(err); 
+    }
+  });
 
-    // Return DB CALL WITH CONSTRAINTS
 
 
-     console.log(`${evt}\t${constraints}`);
-     
-  })
-
-  //Pay loan for given borrower
-   ipcMain.handle("db:payLoan",(evt,loan,amt)=>{
-    // Handle pay logic and update db
-    console.log(`${evt}\t${loan},${amt}`)
-  })
-
-
-
+  
   // and load the index.html of the app.
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);

@@ -1,4 +1,5 @@
 <template>
+  <h1>Create Loan</h1>
   <v-form
     v-if="ready"  
     v-model="valid"
@@ -11,9 +12,10 @@
           md="12"
         >
           <v-select
-         
+
             v-model="name"
             item-title="name"
+            item-value="borrower_id"
             :loading="!standby"
             :items="names"
           
@@ -115,7 +117,7 @@ export default {
       valid: false,
       submissionStatus: null,
 
-      name: {},
+      name: null,
       nameRules: [
         value => !!value || 'Name is required.',
         value => (value &&  value.length <= 45) || 'Name must be less than 25 characters.',
@@ -145,9 +147,10 @@ export default {
   methods: {
     // Submit form function
     submitForm() {
-      if (this.valid && this.name.borrower_id) {
+      console.log(this.name)
+      if (this.valid && this.name.borrowerId) {
         // Setting a timer to disappear after x amount of time
-        window.dbDispatch.addLoan(this.name.borrower_id,this.loanAmount,this.loanDate).then(()=>{
+        window.dbDispatch.addLoan({borrowerID:this.name.borrowerId,loanAmount: this.loanAmount,loanDate:this.loanDate}).then(()=>{
            this.submissionStatus = true;
 
         setTimeout(() => {
