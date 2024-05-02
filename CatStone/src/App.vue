@@ -65,12 +65,13 @@ function getBorrowers (){
 
 
    
-      standby.value =false;
+      standby.value = false;
     }
     exe();
     return {
       borrowers,
-      ready
+      ready,
+      standby
     }
   }
   
