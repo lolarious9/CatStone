@@ -6,5 +6,6 @@ Ran inital setup found under https://www.electronforge.io/guides/framework-integ
 To run:<br>
 be in CatStone directory <br>and run
 "npm install"<br>
+install mysql<br>
 run "node ./create-db-n-tables.js"<br>
 "npm run start"
