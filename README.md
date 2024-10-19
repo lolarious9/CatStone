@@ -22,3 +22,11 @@ It provides functionality for tracking borrowers, loans, and payments using a us
     node ./create-db-n-tables.js
 6. Start the application with:
      npm run start
+
+### Screen Shots
+![image](https://github.com/user-attachments/assets/ade04d14-9a3a-42ea-95b4-a7c28a894308)
+![image](https://github.com/user-attachments/assets/f129b421-23ea-40d3-9ddf-1ab73141ec41)
+![image](https://github.com/user-attachments/assets/46377f53-07b9-4bd2-bd23-6323b34700a7)
+
+![image](https://github.com/user-attachments/assets/d198896c-cd97-42a3-bd29-35d109ecb13a)
+![image](https://github.com/user-attachments/assets/8352517a-2b9a-4dcf-93a1-859064177837)
